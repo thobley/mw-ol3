@@ -1,0 +1,19 @@
+{
+  "name": "MelwaysTest",
+  "version": "1.0.0",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "hobley",
+  "contributors": [],
+  "dependencies": {
+    "gulp": "~3.9.1",
+    "gulp-concat": "~2.6.1",
+    "gulp-debug": "~3.1.0",
+    "gulp-load-plugins": "~1.5.0"
+  }
+}

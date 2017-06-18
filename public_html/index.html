@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MelWay Test Site</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css">
+        <link rel="stylesheet" href="/concat/main.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.2.0/ol-debug.css">
+        <style>
+            div.map{
+               /* height: 600px; */
+                width: 100%;
+               /* height: 100%; */
+            }
+            div.mw-ref{
+                display: none;
+                /*width: 100px;*/
+                height: 45px;
+                position: absolute;
+                right: 23px;
+                bottom: 9px;
+
+                background: white;
+                color: white;
+                font-family: Arial;
+                padding: 2px
+            }
+            div.mw-ref-outer{
+                display:flex;
+                flex-direction:row;
+                justify-content: space-around;
+                height:100%;
+                color: white;
+                font-weight: bold;
+                font-size: 20px;
+                background-color: #000000;
+            }
+            div.mw-ref-map{
+                display:flex;
+                flex-direction:column;
+                background-color: #000000;
+                /* height: 46px; */
+                /* width: 54%; */
+            }
+            div.mw-ref-grid{
+                display:flex;
+                flex-direction:column;
+                background-color: #16a5ec;
+                /* height: 46px; */
+                /* width: 46%;*/
+                min-width: 46px;
+                align-items: center;
+            }
+            #mapcontainer{
+                position: relative;
+                height: 100%
+            }
+            p.map-text{
+                position: absolute;
+                width:1px;
+                word-wrap: break-word;
+                font-family: Arial;
+                font-size: 7px;
+                line-height: 11px;
+                margin-left: 5px;
+                margin-top: 5px;
+            }
+            p.mw-ref-val{
+                /* padding-top: 8px; */
+               line-height: 40px;
+               padding-left: 8px;
+               padding-right: 8px;
+                
+            }
+            p.val-map{
+                /* padding-left: 21px; */
+                
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header"><a class="navbar-brand navbar-link" href="http://online.melway.com.au/melway/"> Melways</a>
+                        <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav">
+                            <li class="active" role="presentation"><a href="#">Edge </a></li>
+                            <li role="presentation"><a href="#">Toolbar </a></li>
+                            <li role="presentation"><a href="#">Search </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div id="mapcontainer" class="container-fluid">
+            <div id="map" class="map">
+
+            </div>
+            <div class="mw-ref">
+
+                <div class="mw-ref-outer">
+                    <div class="mw-ref-map">
+                        <p class="map-text">MAP</p>
+                    </div>
+                    <div class="mw-ref-grid"></div></div>
+            </div>
+            <div></div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="concat/libs.js"></script> 
+        <script src="concat/main.js"></script> 
+        
+    </body>
+
+</html>
