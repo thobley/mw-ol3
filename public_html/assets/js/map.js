@@ -46,7 +46,7 @@ $(function () {
             })
         })
     })
-    var malways_inner = new MelwayTileLayer("mel_39_inner",resosWM[20],resosWM[17]);
+    var melways_inner = new MelwayTileLayer("mel_39_inner",resosWM[20],resosWM[17]);
     var melways_key = new MelwayTileLayer("mel_39_keymaps",resosWM[13],resosWM[10]);
     var melways_tour = new MelwaysTileLyer("mel_39_tours",resosWM[10],resosWM[8])
     var foiSource = new ol.source.Vector({
@@ -79,7 +79,7 @@ $(function () {
             })
         }),
         layers: [
-            api, melways, melways_inner, melways_key, melways_tour, mw_grd_20,foi
+            api, melways, melways_inner, melways_key, melways_tour, mw_grd_20
         ],
         view: new ol.View({
             center: [16139257.516644, -4553659.0277665],

@@ -59,7 +59,6 @@ class MatrixIDs {
     };
 }
 class MelwaysTileLayer {
-
     private base: string = "http://182.160.154.221/dev/";
     private baselast: string = "/{z}/{x}/{-y}.PNG";
     private url: string;
