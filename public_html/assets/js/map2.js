@@ -42,12 +42,14 @@ var MatrixIDs = (function () {
     function MatrixIDs(matrixName, levels) {
         this.matrixName = matrixName;
         this.levels = levels;
+        this.createArray();
     }
     MatrixIDs.prototype.createArray = function () {
         var matrixids = new Array(this.levels);
         for (var i = 0; i <= this.levels - 1; ++i) {
             matrixids[i] = this.matrixName + ":" + i;
         }
+        this.matrixArray = matrixids;
     };
     MatrixIDs.prototype.getMatrixName = function () {
         return this.matrixName;
@@ -55,20 +57,21 @@ var MatrixIDs = (function () {
     ;
     return MatrixIDs;
 }());
-var MelwaysTileLayer = (function () {
-    function MelwaysTileLayer(layer, maxRes, minRes) {
+var MelwayTileLayer = (function () {
+    function MelwayTileLayer(layer, maxRes, minRes) {
         this.base = "http://182.160.154.221/dev/";
         this.baselast = "/{z}/{x}/{-y}.PNG";
         this.url = this.base + layer + this.baselast;
         this.maxRes = maxRes;
         this.minRes = minRes;
-        return new ol.layer.Tile({
+        var l = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: this.url
             }),
             minResolution: this.minRes,
             maxResolution: this.maxRes
         });
+        return l;
     }
-    return MelwaysTileLayer;
+    return MelwayTileLayer;
 }());

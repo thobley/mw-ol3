@@ -1,4 +1,4 @@
-declare var ol: any;
+
 class MapResolutions {
     private resArray: number[];
     private espgCode: string;
@@ -47,18 +47,23 @@ class MatrixIDs {
     constructor(matrixName, levels) {
         this.matrixName = matrixName;
         this.levels = levels;
+        this.createArray();
     }
     createArray(): void {
         var matrixids = new Array(this.levels);
         for (var i = 0; i <= this.levels - 1; ++i) {
             matrixids[i] = this.matrixName + ":" + i;
         }
+        this.matrixArray = matrixids;
     }
     getMatrixName(): string {
         return this.matrixName;
     };
 }
-class MelwaysTileLayer {
+
+declare var ol: any;
+
+class MelwayTileLayer {
     private base: string = "http://182.160.154.221/dev/";
     private baselast: string = "/{z}/{x}/{-y}.PNG";
     private url: string;
@@ -68,7 +73,7 @@ class MelwaysTileLayer {
         this.url = this.base + layer + this.baselast;
         this.maxRes = maxRes;
         this.minRes = minRes;
-        return new ol.layer.Tile({
+        let l = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: this.url,
             }),
@@ -76,5 +81,6 @@ class MelwaysTileLayer {
             maxResolution: this.maxRes
 
         });
+    return l;
     }
 }

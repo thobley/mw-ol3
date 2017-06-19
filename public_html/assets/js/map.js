@@ -11,7 +11,7 @@ $(function () {
         source: new ol.source.WMTS({
             url: "//api.maps.vic.gov.au/geowebcacheWM/service/wmts",
             layer: "WEB_MERCATOR",
-            matrixSet: apiMatrixArr.getName(),
+            matrixSet: apiMatrixArr.getMatrixName(),
             format: "image/png",
             projection: proj,
             style: "_null",
@@ -23,7 +23,16 @@ $(function () {
             })
         })
     });
-    var melways = new MelwayTileLayer("mel_39_20kmaps",resosWM[17],resosWM[13]);
+//    var melways = new ol.layer.Tile({
+//        source: new ol.source.XYZ({
+//            url: "http://182.160.154.221/dev/mel_39_20kmaps/{z}/{x}/{-y}.PNG",
+//        }),
+//        minResolution: resosWM[17],
+//        maxResolution: resosWM[13]
+//
+//    });
+    var melways = new MelwayTileLayer("mel_39_20kmaps",resosWM[13],resosWM[17]);
+    console.log(melways.getMaxResolution(),melways.getMinResolution());
     var vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
         
@@ -46,9 +55,32 @@ $(function () {
             })
         })
     })
-    var melways_inner = new MelwayTileLayer("mel_39_inner",resosWM[20],resosWM[17]);
-    var melways_key = new MelwayTileLayer("mel_39_keymaps",resosWM[13],resosWM[10]);
-    var melways_tour = new MelwaysTileLyer("mel_39_tours",resosWM[10],resosWM[8])
+   
+//    var melways_inner = new ol.layer.Tile({
+//        source: new ol.source.XYZ({
+//            url: "http://182.160.154.221/dev/mel_39_inner/{z}/{x}/{-y}.PNG",
+//        }),
+//        minResolution: resosWM[20],
+//        maxResolution: resosWM[17]
+//
+//    });
+    var melways_inner = new MelwayTileLayer("mel_39_inner",resosWM[17],resosWM[20]/2);
+ console.log(melways_inner);
+ console.log(melways_inner.getMaxResolution(),melways_inner.getMinResolution());
+    var melways_key = new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: "http://182.160.154.221/dev/mel_39_keymaps/{z}/{x}/{-y}.PNG",
+        }),
+        minResolution: resosWM[13],
+        maxResolution: resosWM[10]
+    });
+    var melways_tour = new ol.layer.Tile({
+        source: new ol.source.XYZ({
+            url: "http://182.160.154.221/dev/mel_39_tours/{z}/{x}/{-y}.PNG",
+        }),
+        minResolution: resosWM[10],
+        maxResolution: resosWM[8]
+    });
     var foiSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
         
@@ -83,12 +115,14 @@ $(function () {
         ],
         view: new ol.View({
             center: [16139257.516644, -4553659.0277665],
-            zoom: 15
+            zoom: 15,
+            minZoom: 7,
+            maxZoom: 20
         })
     });
     var hoverInteraction = new ol.interaction.Select({
         condition: ol.events.condition.pointerMove,
-        layers: [mw_grd_20],  //Setting layers to be hovered,
+        layers: [mw_grd_20],
         multi: false,
         style: new ol.style.Style({
             stroke: new ol.style.Stroke({
@@ -99,7 +133,24 @@ $(function () {
         //features: 
     });
     map.addInteraction(hoverInteraction);
-    
+    slider = new ol.control.ZoomSlider({
+        
+    });
+    map.addControl(slider);
+    var ins  = $("<div class='zoom-inner' style='width: 100%; height: 100%;'></div>").appendTo(".ol-zoomslider")
+    for (var i = 0; i < 14; i++) {
+        var perc = 100/14;
+        ins.append("<div style='width: 100%; height: "+perc+"%;' class='zoom-steps'></div>");
+    }
+    var all = $('.zoom-steps');
+//    for (var i = 0; i < 14; i++) {
+//        
+//    }
+    $(all[0]).css("background-color","#2e62fa");
+    $(all[1]).css("background-color","#2e62fa");
+    $(all[2]).css("background-color","#2e62fa");
+    $(all[3]).css("background-color","#4fb7ff");
+    $(all[4]).css("background-color","#4fb7ff");
     hoverInteraction.on('select', function (evt) {
         if(evt.selected[0]){
             $(".mw-ref").show();
@@ -124,4 +175,4 @@ $(function () {
 //            console.log(feature);
 //        }
     });
-})
+});

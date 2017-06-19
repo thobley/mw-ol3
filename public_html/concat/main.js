@@ -11,31 +11,34 @@ $(function () {
     var proj = ol.proj.get("EPSG:3857");
     var resosOb = new MapResolutions("EPSG:3857",21);
     var resosWM = resosOb.createResolutionArray();
+    var apiMatrixArr = new MatrixIDs("EPSG:3857_WEB_MERCATOR",21);
     var api = new ol.layer.Tile({
         opacity: 0.3,
         source: new ol.source.WMTS({
             url: "//api.maps.vic.gov.au/geowebcacheWM/service/wmts",
             layer: "WEB_MERCATOR",
-            matrixSet: "EPSG:3857_WEB_MERCATOR",
+            matrixSet: apiMatrixArr.getMatrixName(),
             format: "image/png",
             projection: proj,
             style: "_null",
             tileGrid: new ol.tilegrid.WMTS({
                 origin: ol.extent.getTopLeft(proj.getExtent()),
-                matrixIds: matrixIds("EPSG:3857_WEB_MERCATOR", 21),
+                matrixIds: apiMatrixArr.matrixArray,
                 resolutions: resosWM,
                 tileSize: 512
             })
         })
     });
-    var melways = new ol.layer.Tile({
-        source: new ol.source.XYZ({
-            url: "http://182.160.154.221/dev/mel_39_20kmaps/{z}/{x}/{-y}.PNG",
-        }),
-        minResolution: resosWM[17],
-        maxResolution: resosWM[13]
-
-    });
+//    var melways = new ol.layer.Tile({
+//        source: new ol.source.XYZ({
+//            url: "http://182.160.154.221/dev/mel_39_20kmaps/{z}/{x}/{-y}.PNG",
+//        }),
+//        minResolution: resosWM[17],
+//        maxResolution: resosWM[13]
+//
+//    });
+    var melways = new MelwayTileLayer("mel_39_20kmaps",resosWM[13],resosWM[17]);
+    console.log(melways.getMaxResolution(),melways.getMinResolution());
     var vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
         
@@ -58,15 +61,18 @@ $(function () {
             })
         })
     })
-    var melways_inner = new ol.layer.Tile({
-        source: new ol.source.XYZ({
-            url: "http://182.160.154.221/dev/mel_39_inner/{z}/{x}/{-y}.PNG",
-        }),
-        minResolution: resosWM[20],
-        maxResolution: resosWM[17]
-
-    });
-
+   
+//    var melways_inner = new ol.layer.Tile({
+//        source: new ol.source.XYZ({
+//            url: "http://182.160.154.221/dev/mel_39_inner/{z}/{x}/{-y}.PNG",
+//        }),
+//        minResolution: resosWM[20],
+//        maxResolution: resosWM[17]
+//
+//    });
+    var melways_inner = new MelwayTileLayer("mel_39_inner",resosWM[17],resosWM[20]/2);
+ console.log(melways_inner);
+ console.log(melways_inner.getMaxResolution(),melways_inner.getMinResolution());
     var melways_key = new ol.layer.Tile({
         source: new ol.source.XYZ({
             url: "http://182.160.154.221/dev/mel_39_keymaps/{z}/{x}/{-y}.PNG",
@@ -111,16 +117,18 @@ $(function () {
             })
         }),
         layers: [
-            api, melways, melways_inner, melways_key, melways_tour, mw_grd_20,foi
+            api, melways, melways_inner, melways_key, melways_tour, mw_grd_20
         ],
         view: new ol.View({
             center: [16139257.516644, -4553659.0277665],
-            zoom: 15
+            zoom: 15,
+            minZoom: 7,
+            maxZoom: 20
         })
     });
     var hoverInteraction = new ol.interaction.Select({
         condition: ol.events.condition.pointerMove,
-        layers: [mw_grd_20],  //Setting layers to be hovered,
+        layers: [mw_grd_20],
         multi: false,
         style: new ol.style.Style({
             stroke: new ol.style.Stroke({
@@ -131,7 +139,24 @@ $(function () {
         //features: 
     });
     map.addInteraction(hoverInteraction);
-    
+    slider = new ol.control.ZoomSlider({
+        
+    });
+    map.addControl(slider);
+    var ins  = $("<div class='zoom-inner' style='width: 100%; height: 100%;'></div>").appendTo(".ol-zoomslider")
+    for (var i = 0; i < 14; i++) {
+        var perc = 100/14;
+        ins.append("<div style='width: 100%; height: "+perc+"%;' class='zoom-steps'></div>");
+    }
+    var all = $('.zoom-steps');
+//    for (var i = 0; i < 14; i++) {
+//        
+//    }
+    $(all[0]).css("background-color","#2e62fa");
+    $(all[1]).css("background-color","#2e62fa");
+    $(all[2]).css("background-color","#2e62fa");
+    $(all[3]).css("background-color","#4fb7ff");
+    $(all[4]).css("background-color","#4fb7ff");
     hoverInteraction.on('select', function (evt) {
         if(evt.selected[0]){
             $(".mw-ref").show();
@@ -156,14 +181,8 @@ $(function () {
 //            console.log(feature);
 //        }
     });
-})
-function matrixIds(name, l) {
-    var matrixids = new Array(l);
-    for (var i = 0; i <= l - 1; ++i) {
-        matrixids[i] = name + ":" + i;
-    }
-    return matrixids;
-}
+});
+
 var MapResolutions = (function () {
     function MapResolutions(epsgCode, zoomLevels) {
         this.wmArray = [
@@ -203,4 +222,41 @@ var MapResolutions = (function () {
         return this.wmArray.slice(0, zoomLevels);
     };
     return MapResolutions;
+}());
+var MatrixIDs = (function () {
+    function MatrixIDs(matrixName, levels) {
+        this.matrixName = matrixName;
+        this.levels = levels;
+        this.createArray();
+    }
+    MatrixIDs.prototype.createArray = function () {
+        var matrixids = new Array(this.levels);
+        for (var i = 0; i <= this.levels - 1; ++i) {
+            matrixids[i] = this.matrixName + ":" + i;
+        }
+        this.matrixArray = matrixids;
+    };
+    MatrixIDs.prototype.getMatrixName = function () {
+        return this.matrixName;
+    };
+    ;
+    return MatrixIDs;
+}());
+var MelwayTileLayer = (function () {
+    function MelwayTileLayer(layer, maxRes, minRes) {
+        this.base = "http://182.160.154.221/dev/";
+        this.baselast = "/{z}/{x}/{-y}.PNG";
+        this.url = this.base + layer + this.baselast;
+        this.maxRes = maxRes;
+        this.minRes = minRes;
+        var l = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: this.url
+            }),
+            minResolution: this.minRes,
+            maxResolution: this.maxRes
+        });
+        return l;
+    }
+    return MelwayTileLayer;
 }());
